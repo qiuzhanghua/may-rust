@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 pub fn count(m: i32, n: i32, traps: &[(i32, i32)]) -> i32 {
-    if m < 1 || m < 1 {
+    if m < 1 || n < 1 || m >= 10 || n >= 10 {
         return 0;
     }
     let mut set = HashSet::<i32>::new();
@@ -12,7 +12,6 @@ pub fn count(m: i32, n: i32, traps: &[(i32, i32)]) -> i32 {
         set.insert(row * (n + 1) + col);
     }
     let mut dp = vec![vec![0; (n + 1) as usize]; (m + 1) as usize];
-    //    println!("{:?}", set);
     dp[1][1] = 1;
     for i in 2..=n {
         let one = if set.contains(&(i + 1 + n)) { 0 } else { 1 };
@@ -26,7 +25,6 @@ pub fn count(m: i32, n: i32, traps: &[(i32, i32)]) -> i32 {
         };
         dp[j as usize][1] = one * dp[(j - 1) as usize][1];
     }
-    //    println!("{:?}", dp);
     for i in 2..=m {
         for j in 2..=n {
             if set.contains(&(i * (n + 1) + j)) {
@@ -37,7 +35,6 @@ pub fn count(m: i32, n: i32, traps: &[(i32, i32)]) -> i32 {
             }
         }
     }
-    //    println!("{:?}", dp);
     dp[m as usize][n as usize]
 }
 
