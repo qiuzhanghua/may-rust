@@ -1,37 +1,19 @@
 use std::collections::HashSet;
 
 pub fn count(m: i32, n: i32, traps: &[(i32, i32)]) -> i32 {
-    if m < 1 || n < 1 || m >= 10 || n >= 10 {
-        return 0;
-    }
+    if m < 1 || n < 1 || m >= 10 || n >= 10 || (m == 1 && n == 1) { return 0; }
     let mut set = HashSet::<i32>::new();
     for &(row, col) in traps {
-        if (row > m || col > n) || (1 == row && 1 == col) {
-            return 0;
-        }
-        set.insert(row * (n + 1) + col);
+        if row <= m && col <= n { set.insert(row * (n + 1) + col); }
     }
     let mut dp = vec![vec![0; (n + 1) as usize]; (m + 1) as usize];
-    dp[1][1] = 1;
-    for i in 2..=n {
-        let one = if set.contains(&(i + 1 + n)) { 0 } else { 1 };
-        dp[1][i as usize] = one * dp[1][(i - 1) as usize];
-    }
-    for j in 2..=m {
-        let one = if set.contains(&(j * (n + 1) + 1)) {
-            0
-        } else {
-            1
-        };
-        dp[j as usize][1] = one * dp[(j - 1) as usize][1];
-    }
-    for i in 2..=m {
-        for j in 2..=n {
+    dp[1][0] = 1;
+    for i in 1..=m {
+        for j in 1..=n {
+            dp[i as usize][j as usize] =
+                dp[i as usize][(j - 1) as usize] + dp[(i - 1) as usize][j as usize];
             if set.contains(&(i * (n + 1) + j)) {
                 dp[i as usize][j as usize] = 0;
-            } else {
-                dp[i as usize][j as usize] =
-                    dp[i as usize][(j - 1) as usize] + dp[(i - 1) as usize][j as usize];
             }
         }
     }
